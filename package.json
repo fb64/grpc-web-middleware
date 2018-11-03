@@ -1,0 +1,35 @@
+{
+  "name": "grpc-web-middleware",
+  "version": "0.1.0",
+  "description": "nodejs grpc-web middleware",
+  "main": "index.js",
+  "dependencies": {
+    "http2": "^3.3.7"
+  },
+  "devDependencies": {
+    "eslint": "^5.8.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0"
+  },
+  "scripts": {
+    "lint": "eslint --ext js .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fb64/grpc-web-middleware.git"
+  },
+  "keywords": [
+    "grpc",
+    "grpc-web"
+  ],
+  "author": "florian bernard <contact@fbernard.fr>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fb64/grpc-web-middleware/issues"
+  },
+  "homepage": "https://github.com/fb64/grpc-web-middleware#readme"
+}
