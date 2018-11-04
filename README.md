@@ -1,7 +1,6 @@
 # grpc-web-middleware
 
-Nodejs middleware use to translate requests from [grpc-web](https://github.com/grpc/grpc-web)
-clients to a GRPC server.
+simple nodejs middleware acting as a [grpc-web](https://github.com/grpc/grpc-web) gateway
 
 [![npm version](https://badge.fury.io/js/grpc-web-middleware.svg)](https://badge.fury.io/js/grpc-web-middleware)
 
