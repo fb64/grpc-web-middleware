@@ -1,6 +1,6 @@
 const http2 = require('http2')
 
-function grpcWebMiddleware (grpcUrl) {
+function grpcWebMiddleware (grpcUrl, pathPrefix) {
   var grpcClient = http2.connect(grpcUrl, {})
 
   grpcClient.on('error', (err) => {
@@ -14,12 +14,18 @@ function grpcWebMiddleware (grpcUrl) {
         console.log('grpcClient error: ' + JSON.stringify(err))
       })
     }
-    if (req.headers['content-type'] !== 'application/grpc-web-text'.toUpperCase() && req.method !== 'POST') {
-      await next()
-    } else {
+    if (isApplicable(req, pathPrefix)) {
       await callGrpcServer(req, res, grpcClient)
+    } else {
+      await next()
     }
   }
+}
+
+function isApplicable (req, pathPrefix) {
+  var prefixCondition = pathPrefix ? req.path.startsWith(pathPrefix) : true
+  var grpcRequestCondition = req.headers['content-type'].toUpperCase() === 'application/grpc-web-text'.toUpperCase() && req.method === 'POST'
+  return grpcRequestCondition && prefixCondition
 }
 
 function callGrpcServer (req, res, hc) {
