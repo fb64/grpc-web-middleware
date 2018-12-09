@@ -1,6 +1,6 @@
 {
   "name": "grpc-web-middleware",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "nodejs grpc-web middleware",
   "main": "index.js",
   "dependencies": {
@@ -12,11 +12,13 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^8.0.0",
     "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0"
+    "eslint-plugin-standard": "^4.0.0",
+    "jest": "^23.6.0",
+    "rewire": "^4.0.1"
   },
   "scripts": {
     "lint": "eslint --ext js .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
