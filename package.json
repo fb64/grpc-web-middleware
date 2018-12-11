@@ -1,6 +1,6 @@
 {
   "name": "grpc-web-middleware",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "nodejs grpc-web middleware",
   "main": "index.js",
   "dependencies": {

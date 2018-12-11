@@ -6,7 +6,7 @@ describe('test configuration applicability', () => {
     var mockRequest = {
       headers: { 'content-type': 'application/grpc-web-text' },
       method: 'POST',
-      path: '/test/path'
+      url: '/test/path'
     }
     expect(isApplicable(mockRequest)).toBe(true)
   })
@@ -15,7 +15,7 @@ describe('test configuration applicability', () => {
     var mockRequest = {
       headers: { 'content-type': 'application/json' },
       method: 'POST',
-      path: '/test/path'
+      url: '/test/path'
     }
     expect(isApplicable(mockRequest)).toBe(false)
   })
@@ -24,7 +24,7 @@ describe('test configuration applicability', () => {
     var mockRequest = {
       headers: { 'content-type': 'application/grpc-web-text' },
       method: 'GET',
-      path: '/test/path'
+      url: '/test/path'
     }
     expect(isApplicable(mockRequest)).toBe(false)
   })
@@ -33,7 +33,7 @@ describe('test configuration applicability', () => {
     var mockRequest = {
       headers: { 'content-type': 'application/grpc-web-text' },
       method: 'POST',
-      path: '/prefix/path'
+      url: '/prefix/path'
     }
     expect(isApplicable(mockRequest, '/prefix')).toBe(true)
   })
@@ -42,7 +42,7 @@ describe('test configuration applicability', () => {
     var mockRequest = {
       headers: { 'content-type': 'application/grpc-web-text' },
       method: 'POST',
-      path: '/test/path'
+      url: '/test/path'
     }
     expect(isApplicable(mockRequest, '/prefix')).toBe(false)
   })

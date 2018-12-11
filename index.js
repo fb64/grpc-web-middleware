@@ -15,7 +15,7 @@ function grpcWebMiddleware (grpcUrl, pathPrefix) {
       })
     }
     if (isApplicable(req, pathPrefix)) {
-      await callGrpcServer(req, res, grpcClient)
+      await callGrpcServer(req, res, grpcClient, pathPrefix)
     } else {
       await next()
     }
@@ -23,22 +23,22 @@ function grpcWebMiddleware (grpcUrl, pathPrefix) {
 }
 
 function isApplicable (req, pathPrefix) {
-  var prefixCondition = pathPrefix ? req.path.startsWith(pathPrefix) : true
+  var prefixCondition = pathPrefix ? req.url.startsWith(pathPrefix) : true
   var grpcRequestCondition = req.headers['content-type'].toUpperCase() === 'application/grpc-web-text'.toUpperCase() && req.method === 'POST'
   return grpcRequestCondition && prefixCondition
 }
 
-function callGrpcServer (req, res, hc) {
+function callGrpcServer (req, res, hc, pathPrefix) {
+  var grpcPath = pathPrefix ? req.url.slice(pathPrefix.length) : req.url
   return new Promise(function (resolve, reject) {
     var hasResponse = false
     res.setHeader('content-type', 'application/grpc-web-text')
-
     // init http2 post request
     var h2req = hc.request({
       [http2.constants.HTTP2_HEADER_TE]: 'trailers',
       [http2.constants.HTTP2_HEADER_METHOD]: http2.constants.HTTP2_METHOD_POST,
       [http2.constants.HTTP2_HEADER_CONTENT_TYPE]: 'application/grpc',
-      [http2.constants.HTTP2_HEADER_PATH]: req.url
+      [http2.constants.HTTP2_HEADER_PATH]: grpcPath
     })
 
     h2req.on('response', (headers) => {
