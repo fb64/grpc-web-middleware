@@ -1,7 +1,7 @@
 const http2 = require('http2')
 
 function grpcWebMiddleware (grpcUrl, pathPrefix) {
-  var grpcClient = http2.connect(grpcUrl, {})
+  let grpcClient = http2.connect(grpcUrl, {})
 
   grpcClient.on('error', (err) => {
     console.log('grpcClient error: ' + JSON.stringify(err))
@@ -23,18 +23,19 @@ function grpcWebMiddleware (grpcUrl, pathPrefix) {
 }
 
 function isApplicable (req, pathPrefix) {
-  var prefixCondition = pathPrefix ? req.url.startsWith(pathPrefix) : true
-  var grpcRequestCondition = req.headers['content-type'].toUpperCase() === 'application/grpc-web-text'.toUpperCase() && req.method === 'POST'
+  let prefixCondition = pathPrefix ? req.url.startsWith(pathPrefix) : true
+  let contentType = req.headers['content-type']
+  let grpcRequestCondition = contentType && contentType.toUpperCase() === 'application/grpc-web-text'.toUpperCase() && req.method === 'POST'
   return grpcRequestCondition && prefixCondition
 }
 
 function callGrpcServer (req, res, hc, pathPrefix) {
-  var grpcPath = pathPrefix ? req.url.slice(pathPrefix.length) : req.url
+  let grpcPath = pathPrefix ? req.url.slice(pathPrefix.length) : req.url
   return new Promise(function (resolve, reject) {
-    var hasResponse = false
+    let hasResponse = false
     res.setHeader('content-type', 'application/grpc-web-text')
     // init http2 post request
-    var h2req = hc.request({
+    let h2req = hc.request({
       [http2.constants.HTTP2_HEADER_TE]: 'trailers',
       [http2.constants.HTTP2_HEADER_METHOD]: http2.constants.HTTP2_METHOD_POST,
       [http2.constants.HTTP2_HEADER_CONTENT_TYPE]: 'application/grpc',
