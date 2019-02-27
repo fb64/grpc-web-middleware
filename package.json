@@ -1,11 +1,12 @@
 {
   "name": "grpc-web-middleware",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "nodejs grpc-web middleware",
   "main": "index.js",
-  "dependencies": {
-    "http2": "^3.3.7"
+  "engines": {
+    "node": ">=9.0.0"
   },
+  "dependencies": {},
   "devDependencies": {
     "eslint": "^5.8.0",
     "eslint-config-standard": "^12.0.0",
