@@ -1,0 +1,6 @@
+version: v2
+modules:
+  - path: test/fixtures
+lint:
+  use:
+    - STANDARD

@@ -1,0 +1,6 @@
+version: v2
+clean: true
+plugins:
+  - remote: buf.build/bufbuild/es:v2.17.0
+    out: test/gen
+    opt: target=ts

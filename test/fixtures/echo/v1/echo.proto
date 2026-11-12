@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package echo.v1;
+
+// EchoService is the upstream gRPC service used by the tests.
+service EchoService {
+  // Echo returns the request message, after delay_ms, or fails with fail_with_code.
+  rpc Echo(EchoRequest) returns (EchoResponse) {}
+
+  // Count streams the numbers 0 to count-1, one every interval_ms.
+  rpc Count(CountRequest) returns (stream CountResponse) {}
+}
+
+message EchoRequest {
+  string message = 1;
+  int32 fail_with_code = 2;
+  int32 delay_ms = 3;
+}
+
+message EchoResponse {
+  string message = 1;
+}
+
+message CountRequest {
+  int32 count = 1;
+  int32 interval_ms = 2;
+}
+
+message CountResponse {
+  int32 number = 1;
+}
