@@ -134,6 +134,16 @@ export function createGrpcWebHandler(options: GrpcWebHandlerOptions): GrpcWebHan
     const cancelUpstream = (): void => {
       if (!stream.closed) stream.close(http2.constants.NGHTTP2_CANCEL)
     }
+
+    /** gRPC status of a stream that closed without one. */
+    const closedStreamStatus = (): [code: number, message: string] => {
+      if (streamError) return [Code.UNAVAILABLE, errorMessage(streamError)]
+      // A crashed or unreachable server closes the connection, which resets its streams with CANCEL.
+      if (!stream.session || stream.session.closed || stream.session.destroyed) {
+        return [Code.UNAVAILABLE, 'Connection to the upstream gRPC server lost']
+      }
+      return [statusFromResetCode(stream.rstCode), `Upstream stream closed without a gRPC status (HTTP/2 code ${stream.rstCode})`]
+    }
     request.signal.addEventListener('abort', cancelUpstream, { once: true })
     stream.once('close', () => request.signal.removeEventListener('abort', cancelUpstream))
 
@@ -144,11 +154,7 @@ export function createGrpcWebHandler(options: GrpcWebHandlerOptions): GrpcWebHan
       stream.once('close', () => resolve(undefined))
     })
     if (!headers) {
-      return trailersOnly(
-        responseContentType,
-        streamError ? Code.UNAVAILABLE : statusFromResetCode(stream.rstCode),
-        streamError ? errorMessage(streamError) : 'Upstream stream closed before sending headers',
-      )
+      return trailersOnly(responseContentType, ...closedStreamStatus())
     }
 
     const responseHeaders = new Headers({ 'content-type': responseContentType })
@@ -185,8 +191,7 @@ export function createGrpcWebHandler(options: GrpcWebHandlerOptions): GrpcWebHan
         stream.once('close', () => {
           if (cancelled) return
           if (!statusSent) {
-            const code = streamError ? Code.UNAVAILABLE : statusFromResetCode(stream.rstCode)
-            const message = streamError ? errorMessage(streamError) : 'Upstream stream ended without a gRPC status'
+            const [code, message] = closedStreamStatus()
             enqueue(trailerFrame([['grpc-status', String(code)], ['grpc-message', encodeURIComponent(message)]]))
           }
           if (encoder) {

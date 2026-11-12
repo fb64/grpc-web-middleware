@@ -10,6 +10,8 @@ export interface Upstream {
   /** Resolves when the server sees a Count stream cancelled by the client. */
   countCancelled: Promise<void>
   stop(): Promise<void>
+  /** Kills every connection immediately, like a crashed server. */
+  kill(): void
 }
 
 export async function startUpstream(): Promise<Upstream> {
@@ -64,5 +66,6 @@ export async function startUpstream(): Promise<Upstream> {
     port,
     countCancelled,
     stop: () => new Promise<void>((resolve) => server.tryShutdown(() => resolve())),
+    kill: () => server.forceShutdown(),
   }
 }

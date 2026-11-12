@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict'
+import { spawn } from 'node:child_process'
+import { once } from 'node:events'
 import { createServer, type Server } from 'node:http'
 import type { AddressInfo } from 'node:net'
 import { after, before, describe, test } from 'node:test'
@@ -131,6 +133,31 @@ for (const [name, createProxy] of Object.entries(proxies)) {
 
         assert.ok(error instanceof ConnectError)
         assert.equal(error.code, Code.Unavailable)
+      } finally {
+        await proxy.close()
+      }
+    })
+
+    test('upstream process dying during a stream maps to UNAVAILABLE', async () => {
+      const upstream = spawn(process.execPath, ['test/upstream-process.ts'], { stdio: ['ignore', 'pipe', 'inherit'] })
+      const [portLine] = await once(upstream.stdout, 'data')
+      const proxy = await createProxy(`http://127.0.0.1:${String(portLine).trim()}`)
+      try {
+        const client = createClient(
+          EchoService,
+          createGrpcWebTransport({ baseUrl: proxy.baseUrl, fetch: proxy.fetch }),
+        )
+        const received: number[] = []
+        const error = await (async () => {
+          for await (const response of client.count({ count: 1_000, intervalMs: 20 })) {
+            received.push(response.number)
+            if (received.length === 1) upstream.kill('SIGKILL')
+          }
+        })().catch((e) => e)
+
+        assert.deepEqual(received, [0])
+        assert.ok(error instanceof ConnectError, `expected an error, got ${error}`)
+        assert.equal(error.code, Code.Unavailable, error.rawMessage)
       } finally {
         await proxy.close()
       }
