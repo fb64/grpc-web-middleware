@@ -1,38 +1,47 @@
 {
   "name": "grpc-web-middleware",
-  "version": "0.2.3",
-  "description": "nodejs grpc-web middleware",
-  "main": "index.js",
-  "engines": {
-    "node": ">=9.0.0"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "eslint": "^5.8.0",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^8.0.0",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "jest": "^23.6.0",
-    "rewire": "^4.0.1"
-  },
-  "scripts": {
-    "lint": "eslint --ext js .",
-    "test": "jest"
-  },
+  "version": "1.0.0",
+  "description": "grpc-web to gRPC proxy for Node.js: a fetch-style handler (Hono...) and a (req, res, next) middleware (node:http, Express, Koa...)",
+  "keywords": [
+    "grpc",
+    "grpc-web",
+    "proxy",
+    "middleware",
+    "hono",
+    "express"
+  ],
+  "license": "MIT",
+  "author": "Florian Bernard",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fb64/grpc-web-middleware.git"
   },
-  "keywords": [
-    "grpc",
-    "grpc-web"
-  ],
-  "author": "florian bernard <contact@fbernard.fr>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/fb64/grpc-web-middleware/issues"
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
-  "homepage": "https://github.com/fb64/grpc-web-middleware#readme"
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test 'test/**/*.test.ts'",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+  },
+  "devDependencies": {
+    "@bufbuild/protobuf": "^2.17.0",
+    "@connectrpc/connect": "^2.3.0",
+    "@connectrpc/connect-web": "^2.3.0",
+    "@grpc/grpc-js": "^1.14.7",
+    "@grpc/proto-loader": "^0.8.1",
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2"
+  }
 }

@@ -1,0 +1,19 @@
+[tools]
+node = "26.13.1"
+buf = "1.75.0"
+
+[tasks.install]
+description = "Install npm dependencies"
+run = "npm ci"
+
+[tasks.generate]
+description = "Generate the test fixture code from test/fixtures/echo.proto"
+run = "buf generate"
+
+[tasks.test]
+description = "Type-check and run the tests"
+run = ["npm run typecheck", "npm test"]
+
+[tasks.build]
+description = "Compile to dist/"
+run = "npm run build"
