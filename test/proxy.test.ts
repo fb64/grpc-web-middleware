@@ -138,8 +138,10 @@ for (const [name, createProxy] of Object.entries(proxies)) {
       }
     })
 
-    test('upstream process dying during a stream maps to UNAVAILABLE', async () => {
+    test('upstream process dying during a stream maps to UNAVAILABLE', async (t) => {
       const upstream = spawn(process.execPath, ['test/upstream-process.ts'], { stdio: ['ignore', 'pipe', 'inherit'] })
+      // Never leave the upstream running if the test fails before killing it, or the test run hangs.
+      t.after(() => upstream.kill('SIGKILL'))
       const [portLine] = await once(upstream.stdout, 'data')
       const proxy = await createProxy(`http://127.0.0.1:${String(portLine).trim()}`)
       try {

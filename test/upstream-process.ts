@@ -2,4 +2,5 @@
 import { startUpstream } from './upstream.ts'
 
 const upstream = await startUpstream()
-console.log(upstream.port)
+// A string, not a number: console.log colours numbers when FORCE_COLOR is set (node --test in a terminal).
+console.log(String(upstream.port))
